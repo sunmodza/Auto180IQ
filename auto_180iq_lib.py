@@ -2,15 +2,13 @@
 
 from itertools import combinations
 from functools import reduce
-import numpy as np
-import threading
-import multiprocessing
 import random as rd
 import numbers
-
 import tkinter as tk
 from time import sleep
 import math
+
+from argparse import ArgumentParser
 
 
 class NumberWithText:
@@ -336,12 +334,11 @@ class IQ180_Solution:
                         if equal_to.text not in self.worked_text:
                             self.worked_text.append(equal_to.text)
                             self.worked.append(equal_to)
-                            print(len(self.worked_text), equal_to, equal_to.num, self.wpe)
+                            #print(len(self.worked_text), equal_to, equal_to.num, self.wpe)
                             if self.TkTextBox is not None:
-
                                 self.TkTextBox.insert(tk.END, f'{len(self.worked_text)} {equal_to.text} \n')
                             else:
-                                print(len(self.worked_text), equal_to, equal_to.num, self.wpe)
+                                print(equal_to,"-")
                         if self.sol_nums == len(self.worked_text):
                             self.running = False
                             return
@@ -354,130 +351,54 @@ class IQ180_Solution:
                         self.packing.append(new_pack)
             self.packing.append(quest)
 
-
-def handle_input():
-    # solution(question,answer,sol_nums=solnums,allow_plus=plus,allow_minus=minus,allow_mul=mul,allow_div=div,allow_exp=exp,allow_fac=fac,TkTextBox=show_ans)
-    # running_threads.terminate()
-
-    # question = [int(i) for i in question_entry.get().split(" ")]
-    # answer = int(answer_entry.get())
-    # solnums = int(how_many_solutions_entry.get())
-    show_ans.delete("1.0", tk.END)
-    question = [float(i) for i in question_entry.get().split(" ")]
-    answer = float(answer_entry.get())
-    solnums = int(how_many_solutions_entry.get())
-    obj.set_start(question, answer, sol_nums=solnums, allow_plus=plus.get(), allow_minus=minus.get(),
-                  allow_mul=mul.get(), allow_div=div.get(), allow_exp=exp.get(), allow_fac=fac.get(),
-                  TkTextBox=show_ans)
-    # obj = IQ180_Solution(question,answer,sol_nums=solnums,allow_plus=plus.get(),allow_minus=minus.get(),allow_mul=mul.get(),allow_div=div.get(),allow_exp=exp.get(),allow_fac=fac.get(),TkTextBox=show_ans)
-
-    # global running_threads
-    # running_threads.terminate()
-    # running_threads.start()
-
-    '''
-    try:
-      running_threads.terminate()
-    except:
-      running_threads =multiprocessing.Process(target=doit, args=(1,))
-    finally:
-      running_threads.start()
-    '''
-    # running_threads.start()
-
-
-def doit(a):
-    question = [int(i) for i in question_entry.get().split(" ")]
-    answer = int(answer_entry.get())
-    solnums = int(how_many_solutions_entry.get())
-    print(question)
-    print(answer)
-    print(solnums)
-    show_ans.delete("1.0", tk.END)
-    solution(question, answer, sol_nums=solnums, allow_plus=plus.get(), allow_minus=minus.get(), allow_mul=mul.get(),
-             allow_div=div.get(), allow_exp=exp.get(), allow_fac=fac.get(), TkTextBox=show_ans)
-
-
-# quest = [3,2,5,6,1,8]
-# ans = 37
-
-# a = solution(quest,ans,sol_nums = 5000)
-# running_threads = None
-# running_threads = multiprocessing.Process(target=doit, args=())
-# question = []
-# answer = None
-# sol_nums = None
 if __name__ == '__main__':
+    #python .\auto_180iq_lib.py -q "1 2 3 4 5" -a "37" -n 1
+    parser = ArgumentParser()
+    parser.add_argument("-a", "--answer", dest="answer",
+                        help="question")
+    parser.add_argument("-q", "--question",
+                        dest="question",
+                        help="answer")
+    parser.add_argument("-n", "--number",
+                        dest="N",
+                        default=1,
+                        help="answer")
+    parser.add_argument("-add",
+                        dest="is_add",
+                        default=True,
+                        )
+
+    parser.add_argument("-sub",
+                        dest="is_sub",
+                        default=True,
+                        )
+    parser.add_argument("-div",
+                        dest="is_div",
+                        default=True,
+                        )
+    parser.add_argument("-mul",
+                        dest="is_mul",
+                        default=True,
+                        )
+    parser.add_argument("-exp",
+                        dest="is_exp",
+                        default=True,
+                        )
+    parser.add_argument("-fac",
+                        dest="is_fac",
+                        default=True,
+                        )
+
+
+
+    args = vars(parser.parse_args())
+    #print(args)
+    question = [float(i) for i in args["question"].split(" ")]
+    ans = float(args["answer"])
+
     obj = IQ180_Solution()
-    threading._start_new_thread(obj.solution, ())
-
-    app = tk.Tk("180iq-solver")
-    app.title("190iq-ezy")
-    app.resizable(width=False, height=False)
-
-    question_text = tk.Label(app, text="your numbers")
-    question_text.grid(row=0, column=0)
-
-    question_entry = tk.Entry(app)
-    question_entry.grid(row=0, column=1, columnspan=2)
-
-    ans_text = tk.Label(app, text="your answer")
-    ans_text.grid(row=1, column=0)
-
-    answer_entry = tk.Entry(app)
-    answer_entry.grid(row=1, column=1, columnspan=2)
-
-    how_many_solutions_text = tk.Label(app, text="solnums")
-    how_many_solutions_text.grid(row=2, column=0)
-
-    how_many_solutions_entry = tk.Entry(app)
-    how_many_solutions_entry.grid(row=2, column=1, columnspan=2)
-
-    find_button = tk.Button(app, text="find it!!", command=handle_input)
-    find_button.grid(row=5, column=0, columnspan=3)
-
-    plus = tk.IntVar()
-    minus = tk.IntVar()
-    mul = tk.IntVar()
-    div = tk.IntVar()
-    exp = tk.IntVar()
-    fac = tk.IntVar()
-
-    is_plus_allow = tk.Checkbutton(
-        app, text="Plus", variable=plus)
-    is_plus_allow.grid(row=3, column=0)
-    is_plus_allow.select()
-    is_minus_allow = tk.Checkbutton(
-        app, text="Minus", variable=minus)
-    is_minus_allow.grid(row=3, column=1)
-    is_minus_allow.select()
-    is_mul_allow = tk.Checkbutton(
-        app, text="Mul", variable=mul)
-    is_mul_allow.grid(row=3, column=2)
-    is_mul_allow.select()
-    is_div_allow = tk.Checkbutton(
-        app, text="Div", variable=div)
-    is_div_allow.grid(row=4, column=0)
-    is_div_allow.select()
-    is_exp_allow = tk.Checkbutton(
-        app, text="Exp", variable=exp)
-    is_exp_allow.grid(row=4, column=1)
-    is_exp_allow.select()
-    is_fac_allow = tk.Checkbutton(
-        app, text="Fac", variable=fac)
-    is_fac_allow.grid(row=4, column=2)
-    is_fac_allow.select()
-
-    ans_frame = tk.Frame(app)
-    ans_frame.grid(row=6, column=0, columnspan=3)
-
-    scroller = tk.Scrollbar(ans_frame)
-    scroller.pack(side=tk.RIGHT, fill=tk.Y)
-
-    show_ans = tk.Text(ans_frame, width=30, height=5)
-    show_ans.pack(side=tk.LEFT)
-
-    show_ans.config(yscrollcommand=scroller.set)
-    scroller.config(command=show_ans.yview)
-
-    app.mainloop()
+    obj.set_start(question,37,sol_nums=int(args["N"]),allow_mul=args["is_mul"],
+                  allow_div=args["is_div"],allow_plus=args["is_add"],
+                  allow_exp=args["is_exp"],allow_fac=args["is_fac"],
+                  allow_minus=args["is_sub"])
+    obj.run_a_solution()
