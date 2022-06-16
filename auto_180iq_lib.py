@@ -46,6 +46,9 @@ class NumberWithText:
     def factorial(self):
         return NumberWithText(math.factorial(self.num), f'({self.text}!)')
 
+    def sqrt(self):
+        return NumberWithText(math.sqrt(self.num), f'sqrt({self.text})')
+
 
 def double_plus_combi(N, max_n=4):
     ans = []
@@ -63,6 +66,26 @@ def anything_is_closet(quest, ans, g):
     g = 0
     if p[g].subset is None:
         return None, p[g].value
+    return [p[g].subset], p[g].value
+
+
+def anything_sqrt_closet(quest, ans, g):
+    sortv = []
+    for i in quest:
+        try:
+            final_val = i.sqrt()
+            #print(final_val)
+        except BaseException as e:
+            continue
+        dist_phd = abs(final_val.num - ans.num)
+        sortv.append(SortObj(final_val, i, dist_phd))
+    p = sorted(sortv)
+    g = 0
+    try:
+        if p[g].subset is None:
+            return None, p[g].value
+    except:
+        return None,None
     return [p[g].subset], p[g].value
 
 
@@ -280,11 +303,11 @@ class IQ180_Solution:
         super().__init__()
 
     def set_start(self, quest, ans, sol_nums=1, allow_plus=True, allow_minus=True, allow_mul=True, allow_div=True,
-                  allow_exp=True, allow_fac=True, TkTextBox=None):
+                  allow_exp=True, allow_fac=True, allow_sqrt=True, TkTextBox=None):
         self.quest = [NumberWithText(i) for i in quest]
         self.ans = NumberWithText(ans)
         allow_arg = [allow_plus, allow_minus,
-                     allow_mul, allow_div, allow_exp, allow_fac]
+                     allow_mul, allow_div, allow_exp, allow_fac, allow_sqrt]
         self.sol_nums = sol_nums
         self.allow_plus = allow_plus
         self.allow_minus = allow_minus
@@ -292,10 +315,11 @@ class IQ180_Solution:
         self.allow_div = allow_div
         self.allow_exp = allow_exp
         self.allow_fac = allow_fac
+        self.allow_sqrt = allow_sqrt
         self.TkTextBox = TkTextBox
         self.packing = [self.quest]
         self.all_methods = [anything_plus_closet, anything_mul_closet, anything_minus_closet,
-                            anything_div_closet, anything_exp_closet, anything_factorial_closet]
+                            anything_div_closet, anything_exp_closet, anything_factorial_closet,anything_sqrt_closet]
         self.methods = []
         for i in range(len(allow_arg)):
             if allow_arg[i] is True or allow_arg[i] == 1:
@@ -397,7 +421,7 @@ if __name__ == '__main__':
     ans = float(args["answer"])
 
     obj = IQ180_Solution()
-    obj.set_start(question,37,sol_nums=int(args["N"]),allow_mul=args["is_mul"],
+    obj.set_start(question,ans,sol_nums=int(args["N"]),allow_mul=args["is_mul"],
                   allow_div=args["is_div"],allow_plus=args["is_add"],
                   allow_exp=args["is_exp"],allow_fac=args["is_fac"],
                   allow_minus=args["is_sub"])
