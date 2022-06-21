@@ -412,6 +412,11 @@ if __name__ == '__main__':
                         dest="is_fac",
                         default=True,
                         )
+    parser.add_argument("-sqrt",
+                        dest="is_sqrt",
+                        default=True,
+                        )
+                        
 
 
 
@@ -424,5 +429,5 @@ if __name__ == '__main__':
     obj.set_start(question,ans,sol_nums=int(args["N"]),allow_mul=args["is_mul"],
                   allow_div=args["is_div"],allow_plus=args["is_add"],
                   allow_exp=args["is_exp"],allow_fac=args["is_fac"],
-                  allow_minus=args["is_sub"])
+                  allow_minus=args["is_sub"],allow_sqrt=args["is_sqrt"])
     obj.run_a_solution()
